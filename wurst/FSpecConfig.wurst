@@ -1,0 +1,105 @@
+package FSpecConfig
+
+public enum Race
+	HUMAN
+	NIGHTELF
+	ORC
+	UNDEAD
+
+public constant FSPEC_TITLE = "FSpec Board"
+
+public constant WOOD_ICON = "UI\\Feedback\\Resources\\ResourceLumber.blp"
+public constant GOLD_ICON = "UI\\Feedback\\Resources\\ResourceGold.blp"
+public constant SUPPLY_ICON = "UI\\Feedback\\Resources\\ResourceSupply.blp"
+
+
+
+// Race Icons
+public string 	array race_icons
+public string 	array peon_icons
+public string 	array soldier_icons
+public string 	array tier_icons
+
+public int 	array hero_ids
+public string 	array hero_icons
+
+init
+	race_icons[Race.HUMAN castTo int] = "ReplaceableTextures\\CommandButtons\\BTNRifleman.blp"
+	race_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNArcher.blp"
+	race_icons[Race.ORC castTo int] = "ReplaceableTextures\\CommandButtons\\BTNHeadhunter.blp"
+	race_icons[Race.UNDEAD castTo int] = "ReplaceableTextures\\CommandButtons\\BTNCryptFiend.blp"
+	
+	peon_icons[Race.HUMAN castTo int] = "ReplaceableTextures\\CommandButtons\\BTNPeasant.blp"
+	peon_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNWisp.blp"
+	peon_icons[Race.ORC castTo int] = "ReplaceableTextures\\CommandButtons\\BTNPeon.blp"
+	peon_icons[Race.UNDEAD castTo int] = "ReplaceableTextures\\CommandButtons\\BTNAcolyte.blp"
+	
+	soldier_icons[Race.HUMAN castTo int] = "ReplaceableTextures\\CommandButtons\\BTNFootman.blp"
+	soldier_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNArcher.blp"
+	soldier_icons[Race.ORC castTo int] = "ReplaceableTextures\\CommandButtons\\BTNGrunt.blp"
+	soldier_icons[Race.UNDEAD castTo int] = "ReplaceableTextures\\CommandButtons\\BTNGhoul.blp"
+	
+	tier_icons[(Race.HUMAN castTo int)*3] = "ReplaceableTextures\\CommandButtons\\BTNTownHall.blp"
+	tier_icons[(Race.HUMAN castTo int)*3+1] = "ReplaceableTextures\\CommandButtons\\BTNKeep.blp"
+	tier_icons[(Race.HUMAN castTo int)*3+2] = "ReplaceableTextures\\CommandButtons\\BTNCastle.blp"
+	tier_icons[(Race.NIGHTELF castTo int)*3] = "ReplaceableTextures\\CommandButtons\\BTNTreeOfLife.blp"
+	tier_icons[(Race.NIGHTELF castTo int)*3+1] = "ReplaceableTextures\\CommandButtons\\BTNTreeOfAges.blp"
+	tier_icons[(Race.NIGHTELF castTo int)*3+2] = "ReplaceableTextures\\CommandButtons\\BTNTreeOfEternity.blp"
+	tier_icons[(Race.ORC castTo int)*3] = "ReplaceableTextures\\CommandButtons\\BTNGreathall.blp"
+	tier_icons[(Race.ORC castTo int)*3+1] = "ReplaceableTextures\\CommandButtons\\BTNStronghold.blp"
+	tier_icons[(Race.ORC castTo int)*3+2] = "ReplaceableTextures\\CommandButtons\\BTNFortress.blp"
+	tier_icons[(Race.UNDEAD castTo int)*3] = "ReplaceableTextures\\CommandButtons\\BTNNecropolis.blp"
+	tier_icons[(Race.UNDEAD castTo int)*3+1] = "ReplaceableTextures\\CommandButtons\\BTNHallOfTheDead.blp"
+	tier_icons[(Race.UNDEAD castTo int)*3+2] = "ReplaceableTextures\\CommandButtons\\BTNBlackCitadel.blp"
+	
+	hero_ids[0] = 'Hamg'
+	hero_icons[0] = "ReplaceableTextures\\CommandButtons\\BTNHeroArchMage.blp"
+	hero_ids[1] = 'Hblm'
+	hero_icons[1] = "ReplaceableTextures\\CommandButtons\\BTNHeroBloodElfPrince.blp"
+	hero_ids[2] = 'Hmkg'
+	hero_icons[2] = "ReplaceableTextures\\CommandButtons\\BTNHeroMountainKing.blp"
+	hero_ids[3] = 'Hpal'
+	hero_icons[3] = "ReplaceableTextures\\CommandButtons\\BTNHeroPaladin.blp"
+	hero_ids[4] = 'Obla'
+	hero_icons[4] = "ReplaceableTextures\\CommandButtons\\BTNHeroBlademaster.blp"
+	hero_ids[5] = 'Ofar'
+	hero_icons[5] = "ReplaceableTextures\\CommandButtons\\BTNHeroFarseer.blp"
+	hero_ids[6] = 'Oshd'
+	hero_icons[6] = "ReplaceableTextures\\CommandButtons\\BTNShadowHunter.blp"
+	hero_ids[7] = 'Otch'
+	hero_icons[7] = "ReplaceableTextures\\CommandButtons\\BTNHeroTaurenChieftain.blp"
+	hero_ids[8] = 'Ucrl'
+	hero_icons[8] = "ReplaceableTextures\\CommandButtons\\BTNHeroCryptLord.blp"
+	hero_ids[9] = 'Udea'
+	hero_icons[9] = "ReplaceableTextures\\CommandButtons\\BTNHeroDeathKnight.blp"
+	hero_ids[10] = 'Udre'
+	hero_icons[10] = "ReplaceableTextures\\CommandButtons\\BTNHeroDreadLord.blp"
+	hero_ids[11] = 'Ulic'
+	hero_icons[11] = "ReplaceableTextures\\CommandButtons\\BTNLichVersion2.blp"
+	hero_ids[12] = 'Edem'
+	hero_icons[12] = "ReplaceableTextures\\CommandButtons\\BTNHeroDemonHunter.blp"
+	hero_ids[13] = 'Ekee'
+	hero_icons[13] = "ReplaceableTextures\\CommandButtons\\BTNKeeperOfTheGrove.blp"
+	hero_ids[14] = 'Emoo'
+	hero_icons[14] = "ReplaceableTextures\\CommandButtons\\BTNPriestessOfTheMoon.blp"
+	hero_ids[15] = 'Ewar'
+	hero_icons[15] = "ReplaceableTextures\\CommandButtons\\BTNHeroWarden.blp"
+	hero_ids[16] = 'Nalc'
+	hero_icons[16] = "ReplaceableTextures\\CommandButtons\\BTNHeroAlchemist.blp"
+	hero_ids[17] = 'Nbst'
+	hero_icons[17] = "ReplaceableTextures\\CommandButtons\\BTNBeastMaster.blp"
+	hero_ids[18] = 'Nbrn'
+	hero_icons[18] = "ReplaceableTextures\\CommandButtons\\BTNBansheeRanger.blp"
+	hero_ids[19] = 'Nfir'
+	hero_icons[19] = "ReplaceableTextures\\CommandButtons\\BTNHeroAvatarOfFlame.blp"
+	hero_ids[20] = 'Nngs'
+	hero_icons[20] = "ReplaceableTextures\\CommandButtons\\BTNNagaSeaWitch.blp"
+	hero_ids[21] = 'Npbm'
+	hero_icons[21] = "ReplaceableTextures\\CommandButtons\\BTNPandarenBrewmaster.blp"
+	hero_ids[22] = 'Nplh'
+	hero_icons[22] = "ReplaceableTextures\\CommandButtons\\BTNPitLord.blp"
+	hero_ids[23] = 'Ntin'
+	hero_icons[23] = "ReplaceableTextures\\CommandButtons\\BTNHeroTinker.blp"
+
+	
+	

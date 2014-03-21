@@ -1,0 +1,11 @@
+package PlayerInit
+
+
+function checkPlayers()
+	for i = 0 to bj_MAX_PLAYERS-1
+		var p = Player(i)
+		if p.getSlotState() == PLAYER_SLOT_STATE_PLAYING and p.getState(PLAYER_STATE_OBSERVER) > 0
+
+
+init
+	CreateTimer().start(0.01, function checkPlayers)

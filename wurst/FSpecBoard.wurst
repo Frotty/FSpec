@@ -1,0 +1,43 @@
+package FSpecBoard
+import FSpecConfig
+
+constant ROWS_PER_PLAYER = 6
+constant COLS_PER_TEAM = 4
+
+FSpecBoard fboard
+
+public class FSpecBoard
+	multiboard mb
+	static int minutes = 0
+	static int seconds = 0
+	
+	construct(int teamCount, int playersPerTeam)
+		mb = CreateMultiboard()
+		mb.setRowCount(playersPerTeam * ROWS_PER_PLAYER)
+		mb.setColumnCount(teamCount * COLS_PER_TEAM)
+		
+		
+	static function onUpdate()
+		fboard.update()
+		
+	function update()
+		var ms = ""
+		var ss = ""
+		seconds++
+		if seconds > 59
+			seconds = 0
+			minutes++
+		else if seconds < 10
+			ss += "0"
+		if minutes < 10
+			ms += "0"
+			
+		ms += minutes.toString()
+		ss += seconds.toString()
+		let timeString = "[|cffFFFFFF" + ms + "|cffFFCC00:|cffFFFFFF" + ss + "|cffFFCC00]"
+		mb.setTitle(FSPEC_TITLE + " " + timeString)
+
+
+init
+	CreateTimer().startPeriodic(1, function FSpecBoard.onUpdate)
+	
