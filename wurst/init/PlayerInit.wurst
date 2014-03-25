@@ -1,11 +1,71 @@
 package PlayerInit
+import FSpecPlayer
+import FSpecConfig
+import FSpecBoard
+import LinkedList
+
+FSpecBoard board
 
 
 function checkPlayers()
+	print("c1")
+	LinkedList<player> players = new LinkedList<player>()
+	LinkedList<player> spectators = new LinkedList<player>()
 	for i = 0 to bj_MAX_PLAYERS-1
 		var p = Player(i)
-		if p.getSlotState() == PLAYER_SLOT_STATE_PLAYING and p.getState(PLAYER_STATE_OBSERVER) > 0
-
+		if p.getSlotState() == PLAYER_SLOT_STATE_PLAYING 
+			print("player found")
+			players.add(p)
+			print("player added")
+		else if p.getState(PLAYER_STATE_OBSERVER) > 0
+			spectators.add(p)
+			print("observer found")
+			
+			
+	print("c2")
+	// TODO more than 1vs1 and 2vs2
+	if players.getSize() > 2	
+		board = new FSpecBoard(2, 2)
+		var p = players.get(0)
+		LinkedList<player> teamone = new LinkedList<player>()
+		LinkedList<player> teamtwo = new LinkedList<player>()
+		for tp in players
+			if p.isAllyOf(tp)
+				teamone.add(tp)
+			else
+				teamtwo.add(tp)
+		print("c2.1")		
+		board.addPlayer(new FSpecPlayer(teamone.get(0), getEnum(GetPlayerRace(teamone.get(0)))))
+		board.addPlayer(new FSpecPlayer(teamone.get(1), getEnum(GetPlayerRace(teamone.get(1)))))
+		board.addPlayer(new FSpecPlayer(teamtwo.get(0), getEnum(GetPlayerRace(teamtwo.get(0)))))
+		board.addPlayer(new FSpecPlayer(teamtwo.get(1), getEnum(GetPlayerRace(teamtwo.get(1)))))
+	else
+		print("c2.2")
+		board = new FSpecBoard(2, 1)
+		print("c2.3")
+		board.addPlayer(new FSpecPlayer(players.get(0), getEnum(GetPlayerRace(players.get(0)))))
+		print("c2.4")
+		board.addPlayer(new FSpecPlayer(players.get(1), getEnum(GetPlayerRace(players.get(1)))))
+	print("c4")
+	for p in players
+		board.mb.display(p, true)
+		
+	for o in spectators
+		board.mb.display(o, true)
+			
+	
+			
+function getEnum(race r) returns Race
+	if r == RACE_HUMAN
+		return Race.HUMAN
+	else if r == RACE_ORC
+		return Race.ORC
+	else if r == RACE_UNDEAD
+		return Race.UNDEAD
+	else
+		return Race.NIGHTELF
 
 init
+	print("init")
 	CreateTimer().start(0.01, function checkPlayers)
+	print("init2")

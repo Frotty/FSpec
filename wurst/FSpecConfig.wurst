@@ -17,11 +17,14 @@ public constant SUPPLY_ICON = "UI\\Feedback\\Resources\\ResourceSupply.blp"
 // Race Icons
 public string 	array race_icons
 public string 	array peon_icons
+public int 		array peon_ids
 public string 	array soldier_icons
 public string 	array tier_icons
 
 public int 	array hero_ids
 public string 	array hero_icons
+
+
 
 init
 	race_icons[Race.HUMAN castTo int] = "ReplaceableTextures\\CommandButtons\\BTNRifleman.blp"
@@ -30,9 +33,13 @@ init
 	race_icons[Race.UNDEAD castTo int] = "ReplaceableTextures\\CommandButtons\\BTNCryptFiend.blp"
 	
 	peon_icons[Race.HUMAN castTo int] = "ReplaceableTextures\\CommandButtons\\BTNPeasant.blp"
+	peon_ids[Race.HUMAN castTo int] = 'hpea'
 	peon_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNWisp.blp"
+	peon_ids[Race.NIGHTELF castTo int] = 'opeo'
 	peon_icons[Race.ORC castTo int] = "ReplaceableTextures\\CommandButtons\\BTNPeon.blp"
+	peon_ids[Race.ORC castTo int] = 'uaco'
 	peon_icons[Race.UNDEAD castTo int] = "ReplaceableTextures\\CommandButtons\\BTNAcolyte.blp"
+	peon_ids[Race.UNDEAD castTo int] = 'ewsp'
 	
 	soldier_icons[Race.HUMAN castTo int] = "ReplaceableTextures\\CommandButtons\\BTNFootman.blp"
 	soldier_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNArcher.blp"
