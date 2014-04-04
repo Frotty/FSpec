@@ -2,12 +2,16 @@ package FSpecPlayer
 import FSpecConfig
 import Colors
 import MapBounds
-
+import FSpecBoard
 FSpecPlayer array players
 
 int typId = 0
+player owner
 
 public class FSpecPlayer
+	FSpecBoard board
+	int startRow
+	int startCol
 	int gold 			= 0
 	int lumber 			= 0
 	int supplyMax 		= 0
@@ -16,6 +20,11 @@ public class FSpecPlayer
 	int peonSupply = 0
 	int soldierSupply = 0
 	int currentTier = 1
+	
+	int heroCount = 0
+	unit hero1
+	unit hero2
+	unit hero3
 	
 	int boardId = -1
 	
@@ -33,34 +42,105 @@ public class FSpecPlayer
 		name = fromPlayer(p).toColorString() + p.getName() + "|r"
 		print("test2 " + name)
 		players[p.getId()] = this
-		typId = peon_ids[currentRace castTo int]
-		GroupEnumUnitsInRect(ENUM_GROUP, mapRect, Filter(function filter))
+		GroupEnumUnitsOfType(ENUM_GROUP, peon_names[currentRace castTo int], null)
 		var count = 0
 		for u in ENUM_GROUP
-			count++
-		ENUM_GROUP.clear()
+			if u.getOwner() == p
+				count++
+			ENUM_GROUP.removeUnit(u)
+		print("COUNT : " + count.toString())
 		peonSupply = count
-		soldierSupply = p.getMaxSupply()-peonSupply
+		soldierSupply = p.getCurrentSupply()-peonSupply
 
 	function update()
+		gold = p.getGold()
+		lumber = p.getLumber()
+		supplyMax = p.getMaxSupply()
+		supplyCurrent = p.getCurrentSupply()
+		board.mb.getItem(startRow+1, startCol).setValue(gold.toString())
+		board.mb.getItem(startRow+2, startCol).setValue(lumber.toString())
+		board.mb.getItem(startRow+3, startCol).setValue(supplyCurrent.toString() + "/" + supplyMax.toString())
+		board.mb.getItem(startRow+4, startCol).setValue(peonSupply.toString())
+		board.mb.getItem(startRow+4, startCol+1).setValue(soldierSupply.toString())
+		if heroCount > 0
+			print("Hero 0")
+			let lvl = GetHeroLevel(hero1)
+			print("Hero 0.1")
+			let exp = GetHeroXP(hero1)
+			print("Hero 0.2")
+			print("lvl" + lvl.toString() + ", exp: " + exp.toString() )
+			let expp = exp/exp_levels[lvl]
+			print("Hero 0.3")
+			print("checked exp 1st hero: lvl" + lvl.toString() + ", exp: " + exp.toString() + ", expp: " + expp.toString() )
+			board.mb.getItem(startRow+1, startCol+2).setValue("Level " + lvl.toString() + " |cff737373(" + (expp*100).toString().substring(0, 3) + "%)|r")
+		if heroCount > 1
+			let lvl = GetHeroLevel(hero2)
+			let exp = GetHeroXP(hero2)
+			let expp = exp/exp_levels[lvl]
+			board.mb.getItem(startRow+2, startCol+2).setValue("Level " + lvl.toString() + " |cff737373(" + (expp*100).toString().substring(0, 3)  + "%)|r")
+		if heroCount > 2
+			let lvl = GetHeroLevel(hero3)
+			let exp = GetHeroXP(hero3)
+			let expp = exp/exp_levels[lvl]
+			board.mb.getItem(startRow+3, startCol+2).setValue("Level " + lvl.toString() + " |cff737373(" + (expp*100).toString().substring(0, 3)  + "%)|r")
 		
-	function onDeath(int id)
+		
+	function onDeath(unit u)
+		let id = u.getTypeId()
+
 		if id == peon_ids[currentRace castTo int]
 			peonSupply--
+		else
+			soldierSupply -= GetFoodUsed(u.getTypeId())
 			
-	function onTrain(int id)
+	function onConstruct(unit u)
+		if currentRace == Race.NIGHTELF
+			let tpid = u.getTypeId()
+			for i = 0 to ancient_count
+				if tpid == ancient_ids[i]
+					peonSupply--
+			
+	function onTrain(unit u)
+		print("unit trained onTrain(u)")
+		let id = u.getTypeId()
+		print("unit trained typeId: id: " + id.toString() + " p_id: " + peon_ids[currentRace castTo int].toString())
 		if id == peon_ids[currentRace castTo int]
 			peonSupply++
+		else
+			soldierSupply += GetFoodUsed(u.getTypeId())
+			
+			for i = 0 to 23
+				if id == hero_ids[i]
+					print("unit trained onTrain(u) match")
+					if heroCount == 0
+						print("unit trained onTrain(u) match first")
+						hero1 = u
+						board.mb.getItem(startRow+1, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
+						print("unit trained onTrain(u) match first done")
+					else if heroCount < 2
+						hero2 = u
+						board.mb.getItem(startRow+2, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
+					else
+						hero3 = u
+						board.mb.getItem(startRow+3, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
+					heroCount++
 		
 	static function onDeathEvent()
-		players[GetTriggerUnit().getOwner().getId()].onDeath(GetTriggerUnit().getTypeId())
+		let fp = players[GetTriggerUnit().getOwner().getId()]
+		if fp != null
+			fp.onDeath(GetTriggerUnit())
+			
+	static function onConstructEvent()
+		let fp = players[GetConstructedStructure().getOwner().getId()]
+		if fp != null
+			fp.onConstruct(GetConstructedStructure())
 		
 	static function onTrainEvent()
-		players[GetTriggerUnit().getOwner().getId()].onTrain(GetTriggerUnit().getTypeId())
-		
-function filter() returns boolean
-	return GetFilterUnit().getTypeId() == typId
+		print("unit trained")
+		players[GetTrainedUnit().getOwner().getId()].onTrain(GetTrainedUnit())
+
 
 init
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_DEATH)..addAction(function FSpecPlayer.onDeathEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_TRAIN_FINISH)..addAction(function FSpecPlayer.onTrainEvent)
+	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_CONSTRUCT_FINISH)..addAction(function FSpecPlayer.onConstructEvent)

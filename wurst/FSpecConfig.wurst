@@ -18,28 +18,43 @@ public constant SUPPLY_ICON = "UI\\Feedback\\Resources\\ResourceSupply.blp"
 public string 	array race_icons
 public string 	array peon_icons
 public int 		array peon_ids
+public string 	array peon_names
 public string 	array soldier_icons
 public string 	array tier_icons
 
 public int 	array hero_ids
 public string 	array hero_icons
 
+public int array exp_levels
+public int array ancient_ids
+public int ancient_count = 4
+
 
 
 init
+	ancient_ids[0] = 'etrp'
+	ancient_ids[0] = 'eaoe'
+	ancient_ids[0] = 'eaom'
+	ancient_ids[0] = 'eaow'
+	ancient_ids[0] = 'eden'
+
 	race_icons[Race.HUMAN castTo int] = "ReplaceableTextures\\CommandButtons\\BTNRifleman.blp"
 	race_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNArcher.blp"
 	race_icons[Race.ORC castTo int] = "ReplaceableTextures\\CommandButtons\\BTNHeadhunter.blp"
 	race_icons[Race.UNDEAD castTo int] = "ReplaceableTextures\\CommandButtons\\BTNCryptFiend.blp"
 	
 	peon_icons[Race.HUMAN castTo int] = "ReplaceableTextures\\CommandButtons\\BTNPeasant.blp"
+	peon_names[Race.HUMAN castTo int] = "peasant"
 	peon_ids[Race.HUMAN castTo int] = 'hpea'
 	peon_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNWisp.blp"
-	peon_ids[Race.NIGHTELF castTo int] = 'opeo'
+	peon_names[Race.NIGHTELF castTo int] = "wisp"
+	peon_ids[Race.NIGHTELF castTo int] = 'ewsp'
 	peon_icons[Race.ORC castTo int] = "ReplaceableTextures\\CommandButtons\\BTNPeon.blp"
-	peon_ids[Race.ORC castTo int] = 'uaco'
+	peon_names[Race.ORC castTo int] = "peon"
+	peon_ids[Race.ORC castTo int] = 'opeo'
 	peon_icons[Race.UNDEAD castTo int] = "ReplaceableTextures\\CommandButtons\\BTNAcolyte.blp"
-	peon_ids[Race.UNDEAD castTo int] = 'ewsp'
+	peon_names[Race.UNDEAD castTo int] = "acolyte"
+	peon_ids[Race.UNDEAD castTo int] = 'uaco'
 	
 	soldier_icons[Race.HUMAN castTo int] = "ReplaceableTextures\\CommandButtons\\BTNFootman.blp"
 	soldier_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNArcher.blp"
@@ -108,5 +123,14 @@ init
 	hero_ids[23] = 'Ntin'
 	hero_icons[23] = "ReplaceableTextures\\CommandButtons\\BTNHeroTinker.blp"
 
+	exp_levels[1] = 200								
+	exp_levels[2] = 500
+	exp_levels[3] = 900
+	exp_levels[4] = 1400
+	exp_levels[5] = 2000
+	exp_levels[6] = 2700
+	exp_levels[7] = 3500
+	exp_levels[8] = 4400
+	exp_levels[9] = 5400
 	
 	

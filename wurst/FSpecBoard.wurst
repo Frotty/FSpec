@@ -1,6 +1,6 @@
 package FSpecBoard
-import FSpecConfig
-import FSpecPlayer
+import initlater FSpecConfig
+import initlater FSpecPlayer
 import LinkedList
 
 constant ROWS_PER_TEAM = 6
@@ -30,37 +30,41 @@ public class FSpecBoard
 		var startRow = 0
 		var startCol = 0
 		fp.boardId = plist.getSize()
+		fp.board = this
 		if fp.boardId >= ppTeam
 			startRow += ROWS_PER_TEAM
 			startCol = (fp.boardId-ppTeam) * COLS_PER_PLAYER
 		else
 			startCol = fp.boardId * COLS_PER_PLAYER
 		print("Player: " + fp.name + " startRow: " + startRow.toString() + " startCol: " + startCol.toString())
+		fp.startCol = startCol
+		fp.startRow = startRow
+		print("Race: " + (fp.currentRace castTo int).toString()  )
+		mb.getItem(startRow, startCol)..setStyle(true, true)..setWidth(0.1)..setIcon(race_icons[fp.currentRace castTo int])..setValue(fp.name)
+		mb.getItem(startRow, startCol+1)..setStyle(false, false)..setWidth(0.001)
+		mb.getItem(startRow, startCol+2)..setStyle(false, false)..setWidth(0.001)
+		mb.getItem(startRow, startCol+3)..setStyle(false, false)..setWidth(0.001)
+		mb.getItem(startRow+1, startCol)..setStyle(true, true)..setWidth(0.03)..setIcon(GOLD_ICON)..setValue(fp.p.getGold().toString())
+		mb.getItem(startRow+1, startCol+1)..setStyle(false, false).setWidth(0.001)
+		mb.getItem(startRow+1, startCol+2)..setStyle(false, false).setWidth(0.07)
+		mb.getItem(startRow+1, startCol+3)..setStyle(false, false).setWidth(0.001)
+		mb.getItem(startRow+2, startCol)..setStyle(true, true)..setWidth(0.03)..setIcon(WOOD_ICON)..setValue(fp.p.getLumber().toString())
+		mb.getItem(startRow+2, startCol+1)..setStyle(false, false).setWidth(0.001)
+		mb.getItem(startRow+2, startCol+2)..setStyle(false, false).setWidth(0.07)
+		mb.getItem(startRow+2, startCol+3)..setStyle(false, false).setWidth(0.001)
+		mb.getItem(startRow+3, startCol)..setStyle(true, true)..setWidth(0.04)..setIcon(SUPPLY_ICON)..setValue(fp.p.getCurrentSupply().toString() + "/" + fp.p.getMaxSupply().toString())
+		mb.getItem(startRow+3, startCol+1)..setStyle(false, false).setWidth(0.001)
+		mb.getItem(startRow+3, startCol+2)..setStyle(false, false).setWidth(0.06)
+		mb.getItem(startRow+3, startCol+3)..setStyle(false, false).setWidth(0.001)
 		
-		mb.getItem(startRow, startCol)..setIcon(race_icons[fp.currentRace castTo int])..setValue(fp.name)..setWidth(.15)
-		mb.getItem(startRow, startCol+1)..setStyle(false, false).setWidth(0)
-		mb.getItem(startRow, startCol+2)..setStyle(false, false).setWidth(0)
-		mb.getItem(startRow, startCol+3)..setStyle(false, false).setWidth(0)
-		mb.getItem(startRow+1, startCol)..setIcon(GOLD_ICON)..setValue(fp.p.getGold().toString())..setWidth(.05)
-		mb.getItem(startRow+1, startCol+1)..setStyle(false, false).setWidth(.1)
-		mb.getItem(startRow+1, startCol+2)..setStyle(false, false).setWidth(0)
-		mb.getItem(startRow+1, startCol+3)..setStyle(false, false).setWidth(0)
-		mb.getItem(startRow+2, startCol)..setIcon(WOOD_ICON)..setValue(fp.p.getLumber().toString())..setWidth(.05)
-		mb.getItem(startRow+2, startCol+1)..setStyle(false, false).setWidth(.1)
-		mb.getItem(startRow+2, startCol+2)..setStyle(false, false).setWidth(0)
-		mb.getItem(startRow+2, startCol+3)..setStyle(false, false).setWidth(0)
-		mb.getItem(startRow+3, startCol)..setIcon(SUPPLY_ICON)..setValue(fp.p.getCurrentSupply().toString() + "/" + fp.p.getMaxSupply().toString())..setWidth(.075)
-		mb.getItem(startRow+3, startCol+1)..setStyle(false, false).setWidth(.1)
-		mb.getItem(startRow+3, startCol+2)..setStyle(false, false).setWidth(0)
-		mb.getItem(startRow+3, startCol+3)..setStyle(false, false).setWidth(0)
-		
-		mb.getItem(startRow+4, startCol)..setIcon(peon_icons[fp.currentRace castTo int])..setValue(fp.peonSupply.toString())..setWidth(.025)
-		mb.getItem(startRow+4, startCol+1)..setIcon(soldier_icons[fp.currentRace castTo int])..setValue(fp.soldierSupply.toString())..setWidth(.025)
-		mb.getItem(startRow+4, startCol+2)..setIcon(tier_icons[fp.currentRace castTo int * 3])..setValue("T" + fp.currentTier.toString())..setWidth(.025)
-		mb.getItem(startRow+5, startCol)..setStyle(false, false).setWidth(0)
-		mb.getItem(startRow+5, startCol+1)..setStyle(false, false).setWidth(0)
-		mb.getItem(startRow+5, startCol+2)..setStyle(false, false).setWidth(0)
-		mb.getItem(startRow+5, startCol+3)..setStyle(false, false).setWidth(0)
+		mb.getItem(startRow+4, startCol)..setStyle(true, true)..setWidth(0.033)..setIcon(peon_icons[fp.currentRace castTo int])..setValue(fp.peonSupply.toString())
+		mb.getItem(startRow+4, startCol+1)..setStyle(true, true)..setWidth(0.033)..setIcon(soldier_icons[fp.currentRace castTo int])..setValue(fp.soldierSupply.toString())
+		mb.getItem(startRow+4, startCol+2)..setStyle(true, true)..setWidth(0.033)..setIcon(tier_icons[fp.currentRace castTo int * 3])..setValue("T " + fp.currentTier.toString())
+		mb.getItem(startRow+4, startCol+3)..setStyle(false, false).setWidth(0.001)
+		mb.getItem(startRow+5, startCol)..setStyle(false, false)
+		mb.getItem(startRow+5, startCol+1)..setStyle(false, false).setWidth(0.001)
+		mb.getItem(startRow+5, startCol+2)..setStyle(false, false).setWidth(0.001)
+		mb.getItem(startRow+5, startCol+3)..setStyle(false, false).setWidth(0.001)
 		plist.add(fp)
 		
 		
@@ -86,6 +90,10 @@ public class FSpecBoard
 		let timeString = "[|cffFFFFFF" + ms + "|cffFFCC00:|cffFFFFFF" + ss + "|cffFFCC00]"
 		mb.setTitle(FSPEC_TITLE + " " + timeString)
 		// Players
+		for p in plist
+			p.update()
+			
+		
 		
 
 
