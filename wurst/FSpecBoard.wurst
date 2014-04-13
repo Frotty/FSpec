@@ -37,10 +37,8 @@ public class FSpecBoard
 			startCol = (fp.boardId-ppTeam) * COLS_PER_PLAYER
 		else
 			startCol = fp.boardId * COLS_PER_PLAYER
-		print("Player: " + fp.name + " startRow: " + startRow.toString() + " startCol: " + startCol.toString())
 		fp.startCol = startCol
 		fp.startRow = startRow
-		print("Race: " + (fp.currentRace castTo int).toString()  )
 		mb.getItem(startRow, startCol)..setStyle(true, true)..setWidth(0.125)..setIcon(race_icons[fp.currentRace castTo int])..setValue(fp.name)
 		mb.getItem(startRow, startCol+1)..setStyle(false, false)..setWidth(0.001)
 		mb.getItem(startRow, startCol+2)..setStyle(false, false)..setWidth(0.001)

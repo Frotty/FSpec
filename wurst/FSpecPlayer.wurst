@@ -41,9 +41,7 @@ public class FSpecPlayer
 		this.p = p
 		currentRace = r
 		id = p.getId()
-		print("test1")
 		name = fromPlayer(p).toColorString() + p.getName() + "|r"
-		print("test2 " + name)
 		players[p.getId()] = this
 		GroupEnumUnitsOfType(ENUM_GROUP, peon_names[currentRace castTo int], null)
 		var count = 0
@@ -51,12 +49,10 @@ public class FSpecPlayer
 			if u.getOwner() == p
 				count++
 			ENUM_GROUP.removeUnit(u)
-		print("COUNT : " + count.toString())
 		peonSupply = count
 		soldierSupply = p.getCurrentSupply()-peonSupply
 
 	function update()
-		let s = """
 		gold = p.getGold()
 		lumber = p.getLumber()
 		supplyMax = p.getMaxSupply()
@@ -87,42 +83,42 @@ public class FSpecPlayer
 //			print("lvl" + lvl.toString() + ", exp: " + exp.toString() )
 			int expp
 			if lvl < 2
-				expp = (exp/exp_levels[lvl]).cut()
+				expp = (exp/exp_levels[lvl]*100).cut()
 			else if lvl == 10
 				expp = 100
 			else
-				expp = ((exp - exp_levels[lvl-1] ) / (exp_levels[lvl] - exp_levels[lvl-1])).cut()
+				expp = ((exp - exp_levels[lvl-1] ) / (exp_levels[lvl] - exp_levels[lvl-1]) *100).cut()
 //			print("checked exp 1st hero: lvl" + lvl.toString() + ", exp: " + exp.toString() + ", expp: " + expp.toString() )
 			var heroRevString = (heroRev1 div 60).toString() + ":" + (heroRev1 mod 60).toString()
 			if heroRev1 > 0
 				board.mb.getItem(startRow+1, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + " (" + heroRevString + ")|r")
 			else if hero1.getHP() > .405
-				board.mb.getItem(startRow+1, startCol+2).setValue("Level " + lvl.toString() + " |cff737373(" + (expp*100).toString() + "%)|r")
+				board.mb.getItem(startRow+1, startCol+2).setValue("Level " + lvl.toString() + " |cff737373(" + (expp).toString() + "%)|r")
 			else
-				board.mb.getItem(startRow+1, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + " (" + (expp*100).toString() + "%)|r")
+				board.mb.getItem(startRow+1, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + " (" + (expp).toString() + "%)|r")
 		if heroCount > 1 
 			let lvl = GetHeroLevel(hero2)
 			let exp = GetHeroXP(hero2)
-			let expp = (exp/exp_levels[lvl]).cut()
+			let expp = (exp/exp_levels[lvl]*100).cut()
 			var heroRevString = (heroRev2 div 60).toString() + ":" + (heroRev2 mod 60).toString()
 			if heroRev2 > 0
-				board.mb.getItem(startRow+2, startCol+2).setValue("(|cffFFCC00" + heroRev2.toString() + "|r) " + "|cff3A3A3ALevel " + lvl.toString() + " (" + heroRevString + ")|r")
+				board.mb.getItem(startRow+2, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + " (" + heroRevString + ")|r")
 			else if hero2.getHP() > .405
-				board.mb.getItem(startRow+2, startCol+2).setValue("Level " + lvl.toString() + " |cff737373(" + (expp*100).toString()  + "%)|r")
+				board.mb.getItem(startRow+2, startCol+2).setValue("Level " + lvl.toString() + " |cff737373(" + (expp).toString()  + "%)|r")
 			else
-				board.mb.getItem(startRow+2, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + " (" + (expp*100).toString()  + "%)|r")
+				board.mb.getItem(startRow+2, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + " (" + (expp).toString()  + "%)|r")
 		if heroCount > 2 
 			let lvl = GetHeroLevel(hero3)
 			let exp = GetHeroXP(hero3)
-			let expp = (exp/exp_levels[lvl]).cut()
+			let expp = (exp/exp_levels[lvl]*100).cut()
 			var heroRevString = (heroRev3 div 60).toString() + ":" + (heroRev3 mod 60).toString()
 			
 			if heroRev3 > 0
 				board.mb.getItem(startRow+3, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + "(" + heroRevString + ") |r")
 			else if hero3.getHP() > .405
-				board.mb.getItem(startRow+3, startCol+2).setValue("Level " + lvl.toString() + " |cff737373(" + (expp*100).toString()  + "%)|r")
+				board.mb.getItem(startRow+3, startCol+2).setValue("Level " + lvl.toString() + " |cff737373(" + (expp).toString()  + "%)|r")
 			else
-				board.mb.getItem(startRow+3, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + " (" + (expp*100).toString()  + "%) |r")
+				board.mb.getItem(startRow+3, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + " (" + (expp).toString()  + "%) |r")
 		
 		
 	function onDeath(unit u)
@@ -131,7 +127,7 @@ public class FSpecPlayer
 		if id == peon_ids[currentRace castTo int]
 			peonSupply--
 		else
-			soldierSupply -= GetFoodUsed(u.getTypeId())
+			soldierSupply -= GetFoodUsed(id)
 		var i = 0
 		var lvl = 0
 		var exp = 0
@@ -147,18 +143,16 @@ public class FSpecPlayer
 			lvl = GetHeroLevel(hero3)
 			exp = GetHeroXP(hero3)
 			i = 3
-		let expp = (exp/exp_levels[lvl]).cut()
+		let expp = (exp/exp_levels[lvl]*100).cut()
 		if i > 0
 //			print("checked exp 1st hero: lvl" + lvl.toString() + ", exp: " + exp.toString() + ", expp: " + expp.toString() )
-			board.mb.getItem(startRow+i, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + " (" + (expp*100).toString() + "%)|r")
+			board.mb.getItem(startRow+i, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + " (" + (expp).toString() + "%)|r")
 
 	function onReviveStart(unit u)
-		print("REVIVE START!")
 		int lvl
 		if u == hero1
 			lvl = GetHeroLevel(hero1)
 			heroRev1 = (55 * lvl * 0.65).toInt()
-			print("hero1revtime: " + heroRev1.toString())
 		else if u == hero2
 			lvl = GetHeroLevel(hero2)
 			heroRev2 = (55 * lvl * 0.65).toInt()			
@@ -168,7 +162,6 @@ public class FSpecPlayer
 			
 			
 	function onReviveCancel(unit u)
-		print("REVIVE CANCEL!")
 		if u == hero1
 			heroRev1 = 0
 		else if u == hero2
@@ -177,7 +170,6 @@ public class FSpecPlayer
 			heroRev2 = 0
 			
 	function onRevive(unit u)
-		print("REVIVE!")
 		var i = 0
 		var lvl = 0
 		var exp = 0
@@ -194,10 +186,10 @@ public class FSpecPlayer
 			lvl = GetHeroLevel(hero3)
 			exp = GetHeroXP(hero3)
 			i = 3
-		let expp = (exp/exp_levels[lvl]).cut()
+		let expp = (exp/exp_levels[lvl]*100).cut()
 		if i > 0
 //			print("checked exp 1st hero: lvl" + lvl.toString() + ", exp: " + exp.toString() + ", expp: " + expp.toString() )
-			board.mb.getItem(startRow+i, startCol+2).setValue("Level " + lvl.toString() + " |cff737373(" + (expp*100).toString() + "%)|r")
+			board.mb.getItem(startRow+i, startCol+2).setValue("Level " + lvl.toString() + " |cff737373(" + (expp).toString() + "%)|r")
 			
 	function onConstruct(unit u)
 		if currentRace == Race.NIGHTELF
@@ -218,15 +210,12 @@ public class FSpecPlayer
 	function onOrder(unit u)
 		if u.getTypeId() == 'ugho' and u.getUserData() > 0
 			let os = OrderId2String(GetIssuedOrderId())
-			
-			print(">>>>>removed")
 			peonSupply-=2
 			soldierSupply+= 2
 			u.setUserData(0)
 			
 	function onPointOrder(unit u)
 		if u.getTypeId() == 'ugho' and u.getUserData() > 0
-			print(">>>>>removed")
 			peonSupply-=2
 			soldierSupply+= 2
 			u.setUserData(0)
@@ -234,13 +223,9 @@ public class FSpecPlayer
 	function onTargetOrder(unit u)
 		let tgt = GetOrderTargetDestructable()
 		let os = OrderId2String(GetIssuedOrderId())
-		if os != null and p == Player(0)
-			print(os)
 		if u.getTypeId() == 'ugho' and os != "resumeharvesting"
-			print(os)
 			if u.getUserData() < 1
 				if tgt != null 
-					print(">>>>>added")
 					peonSupply+=2
 					soldierSupply-=2
 					u.setUserData(1)
@@ -250,10 +235,10 @@ public class FSpecPlayer
 		soldierSupply+= 2
 		
 	function onHeroBuy(unit u)
-		print("BUYYYYYYYYY")
 		let uid = u.getTypeId()
 		for i = 0 to 23
 			if uid == hero_ids[i]
+				soldierSupply += GetFoodUsed(uid)
 				if heroCount == 0
 					hero1 = u
 					board.mb.getItem(startRow+1, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
@@ -266,22 +251,17 @@ public class FSpecPlayer
 				heroCount++	
 			
 	function onTrain(unit u)
-		print("unit trained onTrain(u)")
 		let id = u.getTypeId()
-		print("unit trained typeId: id: " + id.toString() + " p_id: " + peon_ids[currentRace castTo int].toString())
 		if id == peon_ids[currentRace castTo int]
 			peonSupply++
 		else
-			soldierSupply += GetFoodUsed(u.getTypeId())
+			soldierSupply += GetFoodUsed(id)
 			
 			for i = 0 to 23
 				if id == hero_ids[i]
-					print("unit trained onTrain(u) match")
 					if heroCount == 0
-						print("unit trained onTrain(u) match first")
 						hero1 = u
 						board.mb.getItem(startRow+1, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
-						print("unit trained onTrain(u) match first done")
 					else if heroCount < 2
 						hero2 = u
 						board.mb.getItem(startRow+2, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
@@ -311,7 +291,6 @@ public class FSpecPlayer
 			fp.onRevive(GetRevivingUnit())
 		
 	static function onTrainEvent()
-		print("unit trained")
 		players[GetTrainedUnit().getOwner().getId()].onTrain(GetTrainedUnit())
 		
 	static function onReviveStartEvent()
@@ -340,16 +319,13 @@ public class FSpecPlayer
 			fp.onPointOrder(GetOrderedUnit())
 
 	static function onSpellCancelEvent()
-		print("SPELL EFFECT")
-		let id = GetSpellAbilityId()
-		if id == 'Ahrl'
-			players[GetTriggerUnit().getOwner().getId()].onGhoulEnd(GetTriggerUnit())
+//		let id = GetSpellAbilityId()
+//		if id == 'Ahrl'
+//			players[GetTriggerUnit().getOwner().getId()].onGhoulEnd(GetTriggerUnit())
 			
 	static function onSellEvent()
-		print("UNIT SOLD")
 		let u = GetSoldUnit()
 		if u == null
-			print("NULLLLLLLLLLLLLLLLLLLLLLLLL")
 		let id = u.getTypeId()
 		for i = 0 to 23
 			if id == hero_ids[i]
@@ -361,7 +337,6 @@ function real.cut() returns int
 	return this.toInt()
 
 public function init_FSpecPlayer()
-	print(">>INITTTTTTT")
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_DEATH)..addAction(function FSpecPlayer.onDeathEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_TRAIN_FINISH)..addAction(function FSpecPlayer.onTrainEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_CONSTRUCT_FINISH)..addAction(function FSpecPlayer.onConstructEvent)
@@ -370,7 +345,6 @@ public function init_FSpecPlayer()
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_HERO_REVIVE_START)..addAction(function FSpecPlayer.onReviveStartEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_HERO_REVIVE_CANCEL)..addAction(function FSpecPlayer.onReviveCancelEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_SELL)..addAction(function FSpecPlayer.onSellEvent)
-	print("orders")
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER)..addAction(function FSpecPlayer.onTargetOrderEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER)..addAction(function FSpecPlayer.onPointOrderEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_ISSUED_ORDER)..addAction(function FSpecPlayer.onOrderEvent)
