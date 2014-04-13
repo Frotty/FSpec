@@ -1,7 +1,8 @@
 package FSpecBoard
 import initlater FSpecConfig
-import initlater FSpecPlayer
+import FSpecPlayer
 import LinkedList
+import Damager
 
 constant ROWS_PER_TEAM = 6
 constant COLS_PER_PLAYER = 4
@@ -40,28 +41,32 @@ public class FSpecBoard
 		fp.startCol = startCol
 		fp.startRow = startRow
 		print("Race: " + (fp.currentRace castTo int).toString()  )
-		mb.getItem(startRow, startCol)..setStyle(true, true)..setWidth(0.1)..setIcon(race_icons[fp.currentRace castTo int])..setValue(fp.name)
+		mb.getItem(startRow, startCol)..setStyle(true, true)..setWidth(0.125)..setIcon(race_icons[fp.currentRace castTo int])..setValue(fp.name)
 		mb.getItem(startRow, startCol+1)..setStyle(false, false)..setWidth(0.001)
 		mb.getItem(startRow, startCol+2)..setStyle(false, false)..setWidth(0.001)
 		mb.getItem(startRow, startCol+3)..setStyle(false, false)..setWidth(0.001)
-		mb.getItem(startRow+1, startCol)..setStyle(true, true)..setWidth(0.03)..setIcon(GOLD_ICON)..setValue(fp.p.getGold().toString())
+		mb.getItem(startRow+1, startCol)..setStyle(true, true)..setWidth(0.04)..setIcon(GOLD_ICON)..setValue(fp.p.getGold().toString())
 		mb.getItem(startRow+1, startCol+1)..setStyle(false, false).setWidth(0.001)
-		mb.getItem(startRow+1, startCol+2)..setStyle(false, false).setWidth(0.07)
+		mb.getItem(startRow+1, startCol+2)..setStyle(false, false).setWidth(0.085)
 		mb.getItem(startRow+1, startCol+3)..setStyle(false, false).setWidth(0.001)
-		mb.getItem(startRow+2, startCol)..setStyle(true, true)..setWidth(0.03)..setIcon(WOOD_ICON)..setValue(fp.p.getLumber().toString())
+		mb.getItem(startRow+2, startCol)..setStyle(true, true)..setWidth(0.04)..setIcon(WOOD_ICON)..setValue(fp.p.getLumber().toString())
 		mb.getItem(startRow+2, startCol+1)..setStyle(false, false).setWidth(0.001)
-		mb.getItem(startRow+2, startCol+2)..setStyle(false, false).setWidth(0.07)
+		mb.getItem(startRow+2, startCol+2)..setStyle(false, false).setWidth(0.085)
 		mb.getItem(startRow+2, startCol+3)..setStyle(false, false).setWidth(0.001)
 		mb.getItem(startRow+3, startCol)..setStyle(true, true)..setWidth(0.04)..setIcon(SUPPLY_ICON)..setValue(fp.p.getCurrentSupply().toString() + "/" + fp.p.getMaxSupply().toString())
 		mb.getItem(startRow+3, startCol+1)..setStyle(false, false).setWidth(0.001)
-		mb.getItem(startRow+3, startCol+2)..setStyle(false, false).setWidth(0.06)
+		mb.getItem(startRow+3, startCol+2)..setStyle(false, false).setWidth(0.085)
 		mb.getItem(startRow+3, startCol+3)..setStyle(false, false).setWidth(0.001)
 		
-		mb.getItem(startRow+4, startCol)..setStyle(true, true)..setWidth(0.033)..setIcon(peon_icons[fp.currentRace castTo int])..setValue(fp.peonSupply.toString())
-		mb.getItem(startRow+4, startCol+1)..setStyle(true, true)..setWidth(0.033)..setIcon(soldier_icons[fp.currentRace castTo int])..setValue(fp.soldierSupply.toString())
-		mb.getItem(startRow+4, startCol+2)..setStyle(true, true)..setWidth(0.033)..setIcon(tier_icons[fp.currentRace castTo int * 3])..setValue("T " + fp.currentTier.toString())
+		mb.getItem(startRow+4, startCol)..setStyle(true, true)..setWidth(0.042)..setIcon(peon_icons[fp.currentRace castTo int])..setValue(fp.peonSupply.toString())
+		mb.getItem(startRow+4, startCol+1)..setStyle(true, true)..setWidth(0.042)..setIcon(soldier_icons[fp.currentRace castTo int])..setValue(fp.soldierSupply.toString())
+		mb.getItem(startRow+4, startCol+2)..setStyle(true, true)..setWidth(0.042)..setIcon(tier_icons[fp.currentRace castTo int * 3])..setValue("T " + fp.currentTier.toString())
 		mb.getItem(startRow+4, startCol+3)..setStyle(false, false).setWidth(0.001)
-		mb.getItem(startRow+5, startCol)..setStyle(false, false)
+//		if (fp.startRow > 0 and fp.startCol < 1 )
+//			mb.getItem(startRow+5, startCol)..setStyle(true, false)..setWidth(0.124)..setValue("|cffFFCC00Visit w3arena.net..")
+//		else 
+			
+		mb.getItem(startRow+5, startCol)..setStyle(false, false)..setWidth(0.001)
 		mb.getItem(startRow+5, startCol+1)..setStyle(false, false).setWidth(0.001)
 		mb.getItem(startRow+5, startCol+2)..setStyle(false, false).setWidth(0.001)
 		mb.getItem(startRow+5, startCol+3)..setStyle(false, false).setWidth(0.001)

@@ -24,6 +24,7 @@ public string 	array tier_icons
 
 public int 	array hero_ids
 public string 	array hero_icons
+public int 	array tier_ids
 
 public int array exp_levels
 public int array ancient_ids
@@ -33,10 +34,10 @@ public int ancient_count = 4
 
 init
 	ancient_ids[0] = 'etrp'
-	ancient_ids[0] = 'eaoe'
-	ancient_ids[0] = 'eaom'
-	ancient_ids[0] = 'eaow'
-	ancient_ids[0] = 'eden'
+	ancient_ids[1] = 'eaoe'
+	ancient_ids[2] = 'eaom'
+	ancient_ids[3] = 'eaow'
+	ancient_ids[4] = 'eden'
 
 	race_icons[Race.HUMAN castTo int] = "ReplaceableTextures\\CommandButtons\\BTNRifleman.blp"
 	race_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNArcher.blp"
@@ -57,7 +58,7 @@ init
 	peon_ids[Race.UNDEAD castTo int] = 'uaco'
 	
 	soldier_icons[Race.HUMAN castTo int] = "ReplaceableTextures\\CommandButtons\\BTNFootman.blp"
-	soldier_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNArcher.blp"
+	soldier_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNHuntress.blp"
 	soldier_icons[Race.ORC castTo int] = "ReplaceableTextures\\CommandButtons\\BTNGrunt.blp"
 	soldier_icons[Race.UNDEAD castTo int] = "ReplaceableTextures\\CommandButtons\\BTNGhoul.blp"
 	
@@ -73,6 +74,19 @@ init
 	tier_icons[(Race.UNDEAD castTo int)*3] = "ReplaceableTextures\\CommandButtons\\BTNNecropolis.blp"
 	tier_icons[(Race.UNDEAD castTo int)*3+1] = "ReplaceableTextures\\CommandButtons\\BTNHallOfTheDead.blp"
 	tier_icons[(Race.UNDEAD castTo int)*3+2] = "ReplaceableTextures\\CommandButtons\\BTNBlackCitadel.blp"
+	
+	tier_ids[(Race.HUMAN castTo int)*3] = 'htow'
+	tier_ids[(Race.HUMAN castTo int)*3+1] = 'hkee'
+	tier_ids[(Race.HUMAN castTo int)*3+2] = 'hcas'
+	tier_ids[(Race.NIGHTELF castTo int)*3] = 'etol'
+	tier_ids[(Race.NIGHTELF castTo int)*3+1] = 'etoa'
+	tier_ids[(Race.NIGHTELF castTo int)*3+2] = 'etoe'
+	tier_ids[(Race.ORC castTo int)*3] = 'ogre'
+	tier_ids[(Race.ORC castTo int)*3+1] = 'ostr'
+	tier_ids[(Race.ORC castTo int)*3+2] = 'ofrt'
+	tier_ids[(Race.UNDEAD castTo int)*3] = 'unpl'
+	tier_ids[(Race.UNDEAD castTo int)*3+1] = 'unp1'
+	tier_ids[(Race.UNDEAD castTo int)*3+2] = 'unp2'
 	
 	hero_ids[0] = 'Hamg'
 	hero_icons[0] = "ReplaceableTextures\\CommandButtons\\BTNHeroArchMage.blp"
@@ -132,5 +146,6 @@ init
 	exp_levels[7] = 3500
 	exp_levels[8] = 4400
 	exp_levels[9] = 5400
+	exp_levels[10] = 5400
 	
 	

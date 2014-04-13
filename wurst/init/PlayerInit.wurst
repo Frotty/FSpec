@@ -3,14 +3,15 @@ import FSpecPlayer
 import FSpecConfig
 import FSpecBoard
 import LinkedList
-
+import SoundHelper
 FSpecBoard board
 
-
+LinkedList<player> spectators = new LinkedList<player>()
 function checkPlayers()
+	init_FSpecPlayer()
 	print("c1")
 	LinkedList<player> players = new LinkedList<player>()
-	LinkedList<player> spectators = new LinkedList<player>()
+	
 	for i = 0 to bj_MAX_PLAYERS-1
 		var p = Player(i)
 		if p.getSlotState() == PLAYER_SLOT_STATE_PLAYING 
@@ -53,6 +54,12 @@ function checkPlayers()
 	for o in spectators
 		board.mb.display(o, true)
 			
+	
+	GetExpiredTimer().start(5,() -> begin 
+		for s in spectators
+			printTimedToPlayer("|cff9484D6This game is brought to you by w3arena|n    - visit tft.w3arena.net for more information", 10, s)
+		printTimed("|cff9484D6This game is brought to you by w3arena\n    - visit tft.w3arena.net for more information", 10)
+	end)
 	
 			
 function getEnum(race r) returns Race
