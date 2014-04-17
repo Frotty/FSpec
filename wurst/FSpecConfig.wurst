@@ -40,7 +40,7 @@ init
 	ancient_ids[4] = 'eden'
 
 	race_icons[Race.HUMAN castTo int] = "ReplaceableTextures\\CommandButtons\\BTNRifleman.blp"
-	race_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNArcher.blp"
+	race_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNHuntress.blp"
 	race_icons[Race.ORC castTo int] = "ReplaceableTextures\\CommandButtons\\BTNHeadhunter.blp"
 	race_icons[Race.UNDEAD castTo int] = "ReplaceableTextures\\CommandButtons\\BTNCryptFiend.blp"
 	
@@ -58,7 +58,7 @@ init
 	peon_ids[Race.UNDEAD castTo int] = 'uaco'
 	
 	soldier_icons[Race.HUMAN castTo int] = "ReplaceableTextures\\CommandButtons\\BTNFootman.blp"
-	soldier_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNHuntress.blp"
+	soldier_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNArcher.blp"
 	soldier_icons[Race.ORC castTo int] = "ReplaceableTextures\\CommandButtons\\BTNGrunt.blp"
 	soldier_icons[Race.UNDEAD castTo int] = "ReplaceableTextures\\CommandButtons\\BTNGhoul.blp"
 	

@@ -20,6 +20,7 @@ public class FSpecPlayer
 	int peonSupply = 0
 	int soldierSupply = 0
 	int currentTier = 1
+	int inTrainSupply = 0
 	
 	int heroCount = 0
 	unit hero1
@@ -69,6 +70,8 @@ public class FSpecPlayer
 			board.mb.getItem(startRow+3, startCol).setValue("|cffFFFF00" + supplyCurrent.toString() + "/" + supplyMax.toString() + "|r")
 		else
 			board.mb.getItem(startRow+3, startCol).setValue("|cffFC0000" + supplyCurrent.toString() + "/" + supplyMax.toString() + "|r")
+			
+		soldierSupply = supplyCurrent - inTrainSupply - peonSupply
 		board.mb.getItem(startRow+4, startCol).setValue(peonSupply.toString())
 		board.mb.getItem(startRow+4, startCol+1).setValue(soldierSupply.toString())
 		if heroRev1 > 0
@@ -111,7 +114,11 @@ public class FSpecPlayer
 			let lvl = GetHeroLevel(hero3)
 			let exp = GetHeroXP(hero3)
 			let expp = (exp/exp_levels[lvl]*100).cut()
-			var heroRevString = (heroRev3 div 60).toString() + ":" + (heroRev3 mod 60).toString()
+			var heroRevString = ""
+			if (heroRev3 mod 60).toString().length() < 2
+				heroRevString = (heroRev3 div 60).toString() + ":0" + (heroRev3 mod 60).toString()
+			else
+				heroRevString = (heroRev3 div 60).toString() + ":" + (heroRev3 mod 60).toString()
 			
 			if heroRev3 > 0
 				board.mb.getItem(startRow+3, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + "(" + heroRevString + ") |r")
@@ -126,8 +133,6 @@ public class FSpecPlayer
 
 		if id == peon_ids[currentRace castTo int]
 			peonSupply--
-		else
-			soldierSupply -= GetFoodUsed(id)
 		var i = 0
 		var lvl = 0
 		var exp = 0
@@ -150,18 +155,27 @@ public class FSpecPlayer
 
 	function onReviveStart(unit u)
 		int lvl
+		print("revive")
+		inTrainSupply += GetFoodUsed(u.getTypeId())
 		if u == hero1
 			lvl = GetHeroLevel(hero1)
 			heroRev1 = (55 * lvl * 0.65).toInt()
+			if heroRev1 > 55 * 4.0
+				heroRev1 = (55 * 4.0).toInt()
 		else if u == hero2
 			lvl = GetHeroLevel(hero2)
-			heroRev2 = (55 * lvl * 0.65).toInt()			
+			heroRev2 = (55 * lvl * 0.65).toInt()
+			if heroRev2 > 55 * 4.0
+				heroRev2 = (55 * 4.0).toInt()
 		else if u == hero3
 			lvl = GetHeroLevel(hero3)
 			heroRev2 = (55 * lvl * 0.65).toInt()
+			if heroRev3 > 55 * 4.0
+				heroRev3 = (55 * 4.0).toInt()
 			
 			
 	function onReviveCancel(unit u)
+		inTrainSupply -= GetFoodUsed(u.getTypeId())
 		if u == hero1
 			heroRev1 = 0
 		else if u == hero2
@@ -170,10 +184,10 @@ public class FSpecPlayer
 			heroRev2 = 0
 			
 	function onRevive(unit u)
+		inTrainSupply -= GetFoodUsed(u.getTypeId())
 		var i = 0
 		var lvl = 0
 		var exp = 0
-		soldierSupply += GetFoodUsed(u.getTypeId())
 		if u == hero1
 			lvl = GetHeroLevel(hero1)
 			exp = GetHeroXP(hero1)
@@ -211,13 +225,11 @@ public class FSpecPlayer
 		if u.getTypeId() == 'ugho' and u.getUserData() > 0
 			let os = OrderId2String(GetIssuedOrderId())
 			peonSupply-=2
-			soldierSupply+= 2
 			u.setUserData(0)
 			
 	function onPointOrder(unit u)
 		if u.getTypeId() == 'ugho' and u.getUserData() > 0
 			peonSupply-=2
-			soldierSupply+= 2
 			u.setUserData(0)
 			
 	function onTargetOrder(unit u)
@@ -227,18 +239,15 @@ public class FSpecPlayer
 			if u.getUserData() < 1
 				if tgt != null 
 					peonSupply+=2
-					soldierSupply-=2
 					u.setUserData(1)
 		
 	function onGhoulEnd(unit u)
 		peonSupply-=2
-		soldierSupply+= 2
 		
 	function onHeroBuy(unit u)
 		let uid = u.getTypeId()
 		for i = 0 to 23
 			if uid == hero_ids[i]
-				soldierSupply += GetFoodUsed(uid)
 				if heroCount == 0
 					hero1 = u
 					board.mb.getItem(startRow+1, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
@@ -250,13 +259,18 @@ public class FSpecPlayer
 					board.mb.getItem(startRow+3, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
 				heroCount++	
 			
+	function onTrainStart(int uid)
+		inTrainSupply += GetFoodUsed(uid)
+		
+	function onTrainCancel(int uid)
+		inTrainSupply -= GetFoodUsed(uid)
+		
 	function onTrain(unit u)
 		let id = u.getTypeId()
+		inTrainSupply -= GetFoodUsed(u.getTypeId())
 		if id == peon_ids[currentRace castTo int]
 			peonSupply++
-		else
-			soldierSupply += GetFoodUsed(id)
-			
+		else			
 			for i = 0 to 23
 				if id == hero_ids[i]
 					if heroCount == 0
@@ -290,8 +304,14 @@ public class FSpecPlayer
 		if fp != null
 			fp.onRevive(GetRevivingUnit())
 		
-	static function onTrainEvent()
+	static function onTrainEventFinish()
 		players[GetTrainedUnit().getOwner().getId()].onTrain(GetTrainedUnit())
+		
+	static function onTrainEventStart()
+		players[GetTriggerUnit().getOwner().getId()].onTrainStart(GetTrainedUnitType())
+	
+	static function onTrainEventCancel()
+		players[GetTriggerUnit().getOwner().getId()].onTrainCancel(GetTrainedUnitType())
 		
 	static function onReviveStartEvent()
 		let fp = players[GetRevivingUnit().getOwner().getId()]
@@ -338,7 +358,9 @@ function real.cut() returns int
 
 public function init_FSpecPlayer()
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_DEATH)..addAction(function FSpecPlayer.onDeathEvent)
-	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_TRAIN_FINISH)..addAction(function FSpecPlayer.onTrainEvent)
+	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_TRAIN_FINISH)..addAction(function FSpecPlayer.onTrainEventFinish)
+	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_TRAIN_START)..addAction(function FSpecPlayer.onTrainEventStart)
+	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_TRAIN_CANCEL)..addAction(function FSpecPlayer.onTrainEventCancel)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_CONSTRUCT_FINISH)..addAction(function FSpecPlayer.onConstructEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_UPGRADE_FINISH)..addAction(function FSpecPlayer.onUpgradeEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_HERO_REVIVE_FINISH)..addAction(function FSpecPlayer.onReviveEvent)
