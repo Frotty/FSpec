@@ -8,7 +8,6 @@ constant ROWS_PER_TEAM = 6
 constant COLS_PER_PLAYER = 4
 
 FSpecBoard fboard
-
 public class FSpecBoard
 	multiboard mb
 	static int minutes = 0

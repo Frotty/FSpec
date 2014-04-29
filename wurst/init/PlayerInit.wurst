@@ -15,6 +15,8 @@ function checkPlayers()
 		var p = Player(i)
 		if p.getSlotState() == PLAYER_SLOT_STATE_PLAYING 
 			players.add(p)
+			p..addGold(10000)..addLumber(10000)
+		
 		else if p.getState(PLAYER_STATE_OBSERVER) > 0
 			spectators.add(p)
 			
@@ -47,8 +49,8 @@ function checkPlayers()
 	
 	GetExpiredTimer().start(5,() -> begin 
 		for s in spectators
-			printTimedToPlayer("|cff9484D6This game is brought to you by w3arena - visit tft.w3arena.net for more information", 10, s)
-		printTimed("|cff9484D6This game is brought to you by w3arena - visit tft.w3arena.net for more information", 10)
+			printTimedToPlayer("|cff9484D6This game is brought to you by w3arena.net|r", 10, s)
+		printTimed("|cff9484D6This game is brought to you by w3arena.net|r", 10)
 	end)
 	
 			

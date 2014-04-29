@@ -3,12 +3,49 @@ import FSpecConfig
 import Colors
 import MapBounds
 import initlater FSpecBoard
+import LinkedList
+import HashMap
+
 FSpecPlayer array players
 
 int typId = 0
 player owner
 
+function countPeonsOfPlayer(player p) returns int
+	var count = 0
+	GroupEnumUnitsOfPlayer(ENUM_GROUP, p, null)
+	for u in ENUM_GROUP
+		let id = u.getTypeId()
+		for i = 0 to 3
+			if id == peon_ids[i] and u.getHP() > .405
+				count++
+				break
+		ENUM_GROUP.removeUnit(u)
+	return count
+	
+public function testForHero(unit hero) returns boolean
+	let pd = players[hero.getOwner().getId()]
+	pd.p..addGold(750)..addLumber(500)
+	
+	print("test prepared size: " + pd.altars.getSize().toString())
+	for a in pd.altars
+		print("for a")
+		if a.issueTargetOrderById(OrderId("revive"), hero)
+			print("test true")
+			a.issueImmediateOrderById(851976)
+			print("test cancel")
+			pd.p..addGold(-750)..addLumber(-500)
+			return true
+		else
+			print("test false")
+			
+	pd.p..addGold(-750)..addLumber(-500)
+	return false
+		
+	
+
 public class FSpecPlayer
+	LinkedList<unit> altars = new LinkedList<unit>()
 	FSpecBoard board
 	int startRow
 	int startCol
@@ -17,6 +54,7 @@ public class FSpecPlayer
 	int supplyMax 		= 0
 	int supplyCurrent 	= 0
 	
+	int extraPeonSupply = 0
 	int peonSupply = 0
 	int soldierSupply = 0
 	int currentTier = 1
@@ -44,13 +82,7 @@ public class FSpecPlayer
 		id = p.getId()
 		name = fromPlayer(p).toColorString() + p.getName() + "|r"
 		players[p.getId()] = this
-		GroupEnumUnitsOfType(ENUM_GROUP, peon_names[currentRace castTo int], null)
-		var count = 0
-		for u in ENUM_GROUP
-			if u.getOwner() == p
-				count++
-			ENUM_GROUP.removeUnit(u)
-		peonSupply = count
+		peonSupply = countPeonsOfPlayer(p) + extraPeonSupply
 		soldierSupply = p.getCurrentSupply()-peonSupply
 
 	function update()
@@ -71,15 +103,20 @@ public class FSpecPlayer
 		else
 			board.mb.getItem(startRow+3, startCol).setValue("|cffFC0000" + supplyCurrent.toString() + "/" + supplyMax.toString() + "|r")
 			
-		soldierSupply = supplyCurrent - inTrainSupply - peonSupply
-		board.mb.getItem(startRow+4, startCol).setValue(peonSupply.toString())
-		board.mb.getItem(startRow+4, startCol+1).setValue(soldierSupply.toString())
+		
+		
 		if heroRev1 > 0
 			heroRev1--
+			if testForHero(hero1)
+				onReviveCancel(hero1)
 		if heroRev2 > 0
 			heroRev2--
+			if testForHero(hero2)
+				onReviveCancel(hero2)
 		if heroRev3 > 0
 			heroRev3--
+			if testForHero(hero3)
+				onReviveCancel(hero3)
 		if heroCount > 0 
 			let lvl = GetHeroLevel(hero1)
 			let exp = GetHeroXP(hero1)
@@ -92,7 +129,13 @@ public class FSpecPlayer
 			else
 				expp = ((exp - exp_levels[lvl-1] ) / (exp_levels[lvl] - exp_levels[lvl-1]) *100).cut()
 //			print("checked exp 1st hero: lvl" + lvl.toString() + ", exp: " + exp.toString() + ", expp: " + expp.toString() )
-			var heroRevString = (heroRev1 div 60).toString() + ":" + (heroRev1 mod 60).toString()
+			var heroRevString = (heroRev1 div 60).toString() + ":" 
+			let secs = (heroRev1 mod 60)
+			if secs < 10
+				heroRevString += "0" + secs.toString()
+			else
+				heroRevString += secs.toString()
+				
 			if heroRev1 > 0
 				board.mb.getItem(startRow+1, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + " (" + heroRevString + ")|r")
 			else if hero1.getHP() > .405
@@ -102,7 +145,13 @@ public class FSpecPlayer
 		if heroCount > 1 
 			let lvl = GetHeroLevel(hero2)
 			let exp = GetHeroXP(hero2)
-			let expp = (exp/exp_levels[lvl]*100).cut()
+			int expp
+			if lvl < 2
+				expp = (exp/exp_levels[lvl]*100).cut()
+			else if lvl == 10
+				expp = 100
+			else
+				expp = ((exp - exp_levels[lvl-1] ) / (exp_levels[lvl] - exp_levels[lvl-1]) *100).cut()
 			var heroRevString = (heroRev2 div 60).toString() + ":" + (heroRev2 mod 60).toString()
 			if heroRev2 > 0
 				board.mb.getItem(startRow+2, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + " (" + heroRevString + ")|r")
@@ -113,7 +162,13 @@ public class FSpecPlayer
 		if heroCount > 2 
 			let lvl = GetHeroLevel(hero3)
 			let exp = GetHeroXP(hero3)
-			let expp = (exp/exp_levels[lvl]*100).cut()
+			int expp
+			if lvl < 2
+				expp = (exp/exp_levels[lvl]*100).cut()
+			else if lvl == 10
+				expp = 100
+			else
+				expp = ((exp - exp_levels[lvl-1] ) / (exp_levels[lvl] - exp_levels[lvl-1]) *100).cut()
 			var heroRevString = ""
 			if (heroRev3 mod 60).toString().length() < 2
 				heroRevString = (heroRev3 div 60).toString() + ":0" + (heroRev3 mod 60).toString()
@@ -126,16 +181,21 @@ public class FSpecPlayer
 				board.mb.getItem(startRow+3, startCol+2).setValue("Level " + lvl.toString() + " |cff737373(" + (expp).toString()  + "%)|r")
 			else
 				board.mb.getItem(startRow+3, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + " (" + (expp).toString()  + "%) |r")
+				
+		peonSupply = countPeonsOfPlayer(this.p) + extraPeonSupply
+		soldierSupply = supplyCurrent - inTrainSupply - peonSupply
+		if soldierSupply < 0
+			soldierSupply = 0
+		board.mb.getItem(startRow+4, startCol).setValue(peonSupply.toString())
+		board.mb.getItem(startRow+4, startCol+1).setValue(soldierSupply.toString())
 		
 		
 	function onDeath(unit u)
-		let id = u.getTypeId()
-
-		if id == peon_ids[currentRace castTo int]
-			peonSupply--
 		var i = 0
 		var lvl = 0
 		var exp = 0
+		if trainIdMap.get(u) > 0
+			inTrainSupply -= GetFoodUsed(trainIdMap.get(u))
 		if u == hero1
 			lvl = GetHeroLevel(hero1)
 			exp = GetHeroXP(hero1)
@@ -169,12 +229,13 @@ public class FSpecPlayer
 				heroRev2 = (55 * 4.0).toInt()
 		else if u == hero3
 			lvl = GetHeroLevel(hero3)
-			heroRev2 = (55 * lvl * 0.65).toInt()
+			heroRev3 = (55 * lvl * 0.65).toInt()
 			if heroRev3 > 55 * 4.0
 				heroRev3 = (55 * 4.0).toInt()
 			
 			
 	function onReviveCancel(unit u)
+		print("revive cancel")
 		inTrainSupply -= GetFoodUsed(u.getTypeId())
 		if u == hero1
 			heroRev1 = 0
@@ -191,27 +252,40 @@ public class FSpecPlayer
 		if u == hero1
 			lvl = GetHeroLevel(hero1)
 			exp = GetHeroXP(hero1)
+			heroRev1 = -1
 			i = 1
 		else if u == hero2
 			lvl = GetHeroLevel(hero2)
 			exp = GetHeroXP(hero2)
+			heroRev2 = -1
 			i = 2			
 		else if u == hero3
 			lvl = GetHeroLevel(hero3)
 			exp = GetHeroXP(hero3)
+			heroRev3 = -1
 			i = 3
 		let expp = (exp/exp_levels[lvl]*100).cut()
 		if i > 0
 //			print("checked exp 1st hero: lvl" + lvl.toString() + ", exp: " + exp.toString() + ", expp: " + expp.toString() )
 			board.mb.getItem(startRow+i, startCol+2).setValue("Level " + lvl.toString() + " |cff737373(" + (expp).toString() + "%)|r")
 			
+			
 	function onConstruct(unit u)
-		if currentRace == Race.NIGHTELF
-			let tpid = u.getTypeId()
-			for i = 0 to ancient_count
-				if tpid == ancient_ids[i]
-					peonSupply--
-					break
+		trainCountMap.put(u, 0)
+		trainIdMap.put(u, 0)
+		let tpid = u.getTypeId()
+		for i = 0 to 3
+			if tpid == altar_ids[i]
+				players[u.getOwner().getId()].altars.add(u)
+				print("added altar")
+				return
+				
+	function onConstructStart(unit u)
+		let tpid = u.getTypeId()
+		for i = 0 to ancient_count
+			if tpid == ancient_ids[i]
+				peonSupply--
+				return
 					
 	function onUpgrade(unit u)
 		let id = u.getTypeId()
@@ -222,14 +296,26 @@ public class FSpecPlayer
 				break
 				
 	function onOrder(unit u)
+		let id = GetIssuedOrderId()
+		let dum = createUnit(DUMMY_PLAYER, id, vec2(mapMinX, mapMinY), angle(0) ) 
+		if dum != null
+			dum.remove()
+			trainCountMap.put(u, trainCountMap.get(u) + 1)
+			print("count :" + trainCountMap.get(u).toString())
 		if u.getTypeId() == 'ugho' and u.getUserData() > 0
-			let os = OrderId2String(GetIssuedOrderId())
-			peonSupply-=2
+			extraPeonSupply-=2
 			u.setUserData(0)
+		else if u.getTypeId() == 'ngir' and u.getUserData() > 0
+			extraPeonSupply-=4
+			u.setUserData(0)
+			
 			
 	function onPointOrder(unit u)
 		if u.getTypeId() == 'ugho' and u.getUserData() > 0
-			peonSupply-=2
+			extraPeonSupply-=2
+			u.setUserData(0)
+		else if u.getTypeId() == 'ngir' and u.getUserData() > 0
+			extraPeonSupply-=4
 			u.setUserData(0)
 			
 	function onTargetOrder(unit u)
@@ -238,11 +324,14 @@ public class FSpecPlayer
 		if u.getTypeId() == 'ugho' and os != "resumeharvesting"
 			if u.getUserData() < 1
 				if tgt != null 
-					peonSupply+=2
+					extraPeonSupply+=2
+					u.setUserData(1)
+		else if u.getTypeId() == 'ngir' and os != "resumeharvesting"
+			if u.getUserData() < 1
+				if tgt != null 
+					extraPeonSupply+=4
 					u.setUserData(1)
 		
-	function onGhoulEnd(unit u)
-		peonSupply-=2
 		
 	function onHeroBuy(unit u)
 		let uid = u.getTypeId()
@@ -259,30 +348,61 @@ public class FSpecPlayer
 					board.mb.getItem(startRow+3, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
 				heroCount++	
 			
+	boolean testCancel = false
+	boolean wasFirst = false
+	boolean trainStarted = false
+	unit creator = null
+	timer tim
+	int fused = 0
+	
+	HashMap<unit, int> trainCountMap = new HashMap<unit, int>()
+	HashMap<unit, int> trainIdMap = new HashMap<unit, int>()
+	
 	function onTrainStart(int uid)
 		inTrainSupply += GetFoodUsed(uid)
+		trainIdMap.put(GetTriggerUnit(), uid)
+		if testCancel
+			trainStarted = true
+			testCancel = false
+			if GetTriggerUnit() == creator
+				wasFirst = true
+			
 		
 	function onTrainCancel(int uid)
-		inTrainSupply -= GetFoodUsed(uid)
+		print("train cancel")
+		let u = GetTriggerUnit()
+		trainCountMap.put(u, trainCountMap.get(u) - 1)
+		print("count: " + trainCountMap.get(u).toString())
+		if trainCountMap.get(u) > 0
+			testCancel = true
+			creator = u
+			fused = GetFoodUsed(uid)
+			tim = getTimer()
+			tim..start(0.001, function endTest)..setData(this castTo int)
+		else
+			inTrainSupply -= GetFoodUsed(uid)
+			trainIdMap.put(u, 0)
+			
+
 		
 	function onTrain(unit u)
 		let id = u.getTypeId()
-		inTrainSupply -= GetFoodUsed(u.getTypeId())
-		if id == peon_ids[currentRace castTo int]
-			peonSupply++
-		else			
-			for i = 0 to 23
-				if id == hero_ids[i]
-					if heroCount == 0
-						hero1 = u
-						board.mb.getItem(startRow+1, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
-					else if heroCount < 2
-						hero2 = u
-						board.mb.getItem(startRow+2, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
-					else
-						hero3 = u
-						board.mb.getItem(startRow+3, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
-					heroCount++
+		let c = GetTriggerUnit()
+		trainCountMap.put(c, trainCountMap.get(c) - 1)
+		trainIdMap.put(c, id)
+		inTrainSupply -= GetFoodUsed(u.getTypeId())		
+		for i = 0 to 23
+			if id == hero_ids[i]
+				if heroCount == 0
+					hero1 = u
+					board.mb.getItem(startRow+1, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
+				else if heroCount < 2
+					hero2 = u
+					board.mb.getItem(startRow+2, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
+				else
+					hero3 = u
+					board.mb.getItem(startRow+3, startCol+2)..setStyle(true, true)..setValue("Level 1 |cff737373(0%)|r")..setIcon(hero_icons[i])
+				heroCount++
 		
 	static function onDeathEvent()
 		let fp = players[GetTriggerUnit().getOwner().getId()]
@@ -299,6 +419,11 @@ public class FSpecPlayer
 		if fp != null
 			fp.onConstruct(GetConstructedStructure())
 			
+	static function onConstructStartEvent()
+		let fp = players[GetConstructingStructure().getOwner().getId()]
+		if fp != null
+			fp.onConstructStart(GetConstructingStructure())
+			
 	static function onReviveEvent()
 		let fp = players[GetRevivingUnit().getOwner().getId()]
 		if fp != null
@@ -311,6 +436,7 @@ public class FSpecPlayer
 		players[GetTriggerUnit().getOwner().getId()].onTrainStart(GetTrainedUnitType())
 	
 	static function onTrainEventCancel()
+		print("on train cancel")
 		players[GetTriggerUnit().getOwner().getId()].onTrainCancel(GetTrainedUnitType())
 		
 	static function onReviveStartEvent()
@@ -319,11 +445,14 @@ public class FSpecPlayer
 			fp.onReviveStart(GetRevivingUnit())
 			
 	static function onReviveCancelEvent()
+		print("on revive cancel")
 		let fp = players[GetRevivingUnit().getOwner().getId()]
 		if fp != null
 			fp.onReviveCancel(GetRevivingUnit())
 		
 	static function onOrderEvent()
+		if GetOrderedUnit().getOwner() == Player(0)
+			print("on Order: " + GetIssuedOrderId().toString())
 		let fp = players[GetOrderedUnit().getOwner().getId()]
 		if fp != null
 			fp.onOrder(GetOrderedUnit())
@@ -338,10 +467,6 @@ public class FSpecPlayer
 		if fp != null
 			fp.onPointOrder(GetOrderedUnit())
 
-	static function onSpellCancelEvent()
-//		let id = GetSpellAbilityId()
-//		if id == 'Ahrl'
-//			players[GetTriggerUnit().getOwner().getId()].onGhoulEnd(GetTriggerUnit())
 			
 	static function onSellEvent()
 		let u = GetSoldUnit()
@@ -352,6 +477,18 @@ public class FSpecPlayer
 				players[u.getOwner().getId()].onHeroBuy(u)
 				break
 			
+function endTest()
+	let t = GetExpiredTimer()
+	let fs = t.getData() castTo FSpecPlayer
+	fs.testCancel = false
+	if fs.trainStarted
+		print("train started")
+		fs.trainStarted = false
+		if fs.wasFirst
+			print("cancelled unit was first")
+			fs.inTrainSupply-=fs.fused
+			fs.wasFirst = false
+	t.release()
 
 function real.cut() returns int
 	return this.toInt()
@@ -362,6 +499,7 @@ public function init_FSpecPlayer()
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_TRAIN_START)..addAction(function FSpecPlayer.onTrainEventStart)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_TRAIN_CANCEL)..addAction(function FSpecPlayer.onTrainEventCancel)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_CONSTRUCT_FINISH)..addAction(function FSpecPlayer.onConstructEvent)
+	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_CONSTRUCT_START)..addAction(function FSpecPlayer.onConstructStartEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_UPGRADE_FINISH)..addAction(function FSpecPlayer.onUpgradeEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_HERO_REVIVE_FINISH)..addAction(function FSpecPlayer.onReviveEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_HERO_REVIVE_START)..addAction(function FSpecPlayer.onReviveStartEvent)
@@ -370,4 +508,6 @@ public function init_FSpecPlayer()
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER)..addAction(function FSpecPlayer.onTargetOrderEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER)..addAction(function FSpecPlayer.onPointOrderEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_ISSUED_ORDER)..addAction(function FSpecPlayer.onOrderEvent)
+	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_CAST)..addAction(() -> print( "Spell : " + GetAbilityName(GetSpellAbilityId()) + " casted with id : " + GetSpellAbilityId().toString()))
+	print("player inited")
 	

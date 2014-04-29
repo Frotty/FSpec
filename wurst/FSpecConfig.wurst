@@ -25,6 +25,7 @@ public string 	array tier_icons
 public int 	array hero_ids
 public string 	array hero_icons
 public int 	array tier_ids
+public int 	array altar_ids
 
 public int array exp_levels
 public int array ancient_ids
@@ -87,6 +88,13 @@ init
 	tier_ids[(Race.UNDEAD castTo int)*3] = 'unpl'
 	tier_ids[(Race.UNDEAD castTo int)*3+1] = 'unp1'
 	tier_ids[(Race.UNDEAD castTo int)*3+2] = 'unp2'
+	
+	
+	altar_ids[Race.HUMAN castTo int] = 'halt'
+	altar_ids[Race.NIGHTELF castTo int] = 'eate'
+	altar_ids[Race.ORC castTo int] = 'oalt'
+	altar_ids[Race.UNDEAD castTo int] = 'uaod'
+	
 	
 	hero_ids[0] = 'Hamg'
 	hero_icons[0] = "ReplaceableTextures\\CommandButtons\\BTNHeroArchMage.blp"
