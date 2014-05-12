@@ -27,17 +27,12 @@ public function testForHero(unit hero) returns boolean
 	let pd = players[hero.getOwner().getId()]
 	pd.p..addGold(750)..addLumber(500)
 	
-	print("test prepared size: " + pd.altars.getSize().toString())
 	for a in pd.altars
-		print("for a")
 		if a.issueTargetOrderById(OrderId("revive"), hero)
-			print("test true")
 			a.issueImmediateOrderById(851976)
-			print("test cancel")
 			pd.p..addGold(-750)..addLumber(-500)
 			return true
 		else
-			print("test false")
 			
 	pd.p..addGold(-750)..addLumber(-500)
 	return false
@@ -120,7 +115,6 @@ public class FSpecPlayer
 		if heroCount > 0 
 			let lvl = GetHeroLevel(hero1)
 			let exp = GetHeroXP(hero1)
-//			print("lvl" + lvl.toString() + ", exp: " + exp.toString() )
 			int expp
 			if lvl < 2
 				expp = (exp/exp_levels[lvl]*100).cut()
@@ -128,7 +122,6 @@ public class FSpecPlayer
 				expp = 100
 			else
 				expp = ((exp - exp_levels[lvl-1] ) / (exp_levels[lvl] - exp_levels[lvl-1]) *100).cut()
-//			print("checked exp 1st hero: lvl" + lvl.toString() + ", exp: " + exp.toString() + ", expp: " + expp.toString() )
 			var heroRevString = (heroRev1 div 60).toString() + ":" 
 			let secs = (heroRev1 mod 60)
 			if secs < 10
@@ -210,12 +203,10 @@ public class FSpecPlayer
 			i = 3
 		let expp = (exp/exp_levels[lvl]*100).cut()
 		if i > 0
-//			print("checked exp 1st hero: lvl" + lvl.toString() + ", exp: " + exp.toString() + ", expp: " + expp.toString() )
 			board.mb.getItem(startRow+i, startCol+2).setValue("|cff3A3A3ALevel " + lvl.toString() + " (" + (expp).toString() + "%)|r")
 
 	function onReviveStart(unit u)
 		int lvl
-		print("revive")
 		inTrainSupply += GetFoodUsed(u.getTypeId())
 		if u == hero1
 			lvl = GetHeroLevel(hero1)
@@ -235,7 +226,6 @@ public class FSpecPlayer
 			
 			
 	function onReviveCancel(unit u)
-		print("revive cancel")
 		inTrainSupply -= GetFoodUsed(u.getTypeId())
 		if u == hero1
 			heroRev1 = 0
@@ -266,7 +256,6 @@ public class FSpecPlayer
 			i = 3
 		let expp = (exp/exp_levels[lvl]*100).cut()
 		if i > 0
-//			print("checked exp 1st hero: lvl" + lvl.toString() + ", exp: " + exp.toString() + ", expp: " + expp.toString() )
 			board.mb.getItem(startRow+i, startCol+2).setValue("Level " + lvl.toString() + " |cff737373(" + (expp).toString() + "%)|r")
 			
 			
@@ -277,7 +266,6 @@ public class FSpecPlayer
 		for i = 0 to 3
 			if tpid == altar_ids[i]
 				players[u.getOwner().getId()].altars.add(u)
-				print("added altar")
 				break
 		for i = 0 to ancient_count
 			if tpid == ancient_ids[i]
@@ -312,7 +300,6 @@ public class FSpecPlayer
 		if dum != null
 			dum.remove()
 			trainCountMap.put(u, trainCountMap.get(u) + 1)
-			print("count :" + trainCountMap.get(u).toString())
 		if u.getTypeId() == 'ugho' and u.getUserData() > 0
 			extraPeonSupply-=2
 			u.setUserData(0)
@@ -380,10 +367,8 @@ public class FSpecPlayer
 			
 		
 	function onTrainCancel(int uid)
-		print("train cancel")
 		let u = GetTriggerUnit()
 		trainCountMap.put(u, trainCountMap.get(u) - 1)
-		print("count: " + trainCountMap.get(u).toString())
 		if trainCountMap.get(u) > 0
 			testCancel = true
 			creator = u
@@ -452,7 +437,6 @@ public class FSpecPlayer
 		players[GetTriggerUnit().getOwner().getId()].onTrainStart(GetTrainedUnitType())
 	
 	static function onTrainEventCancel()
-		print("on train cancel")
 		players[GetTriggerUnit().getOwner().getId()].onTrainCancel(GetTrainedUnitType())
 		
 	static function onReviveStartEvent()
@@ -461,14 +445,12 @@ public class FSpecPlayer
 			fp.onReviveStart(GetRevivingUnit())
 			
 	static function onReviveCancelEvent()
-		print("on revive cancel")
 		let fp = players[GetRevivingUnit().getOwner().getId()]
 		if fp != null
 			fp.onReviveCancel(GetRevivingUnit())
 		
 	static function onOrderEvent()
 		if GetOrderedUnit().getOwner() == Player(0)
-			print("on Order: " + GetIssuedOrderId().toString())
 		let fp = players[GetOrderedUnit().getOwner().getId()]
 		if fp != null
 			fp.onOrder(GetOrderedUnit())
@@ -498,10 +480,8 @@ function endTest()
 	let fs = t.getData() castTo FSpecPlayer
 	fs.testCancel = false
 	if fs.trainStarted
-		print("train started")
 		fs.trainStarted = false
 		if fs.wasFirst
-			print("cancelled unit was first")
 			fs.inTrainSupply-=fs.fused
 			fs.wasFirst = false
 	t.release()
@@ -525,6 +505,4 @@ public function init_FSpecPlayer()
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER)..addAction(function FSpecPlayer.onTargetOrderEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER)..addAction(function FSpecPlayer.onPointOrderEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_ISSUED_ORDER)..addAction(function FSpecPlayer.onOrderEvent)
-	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_SPELL_CAST)..addAction(() -> print( "Spell : " + GetAbilityName(GetSpellAbilityId()) + " casted with id : " + GetSpellAbilityId().toString()))
-	print("player inited")
 	

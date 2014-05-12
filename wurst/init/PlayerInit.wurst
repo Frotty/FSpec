@@ -15,7 +15,6 @@ function checkPlayers()
 		var p = Player(i)
 		if p.getSlotState() == PLAYER_SLOT_STATE_PLAYING 
 			players.add(p)
-			p..addGold(10000)..addLumber(10000)
 		
 		else if p.getState(PLAYER_STATE_OBSERVER) > 0
 			spectators.add(p)
