@@ -278,13 +278,24 @@ public class FSpecPlayer
 			if tpid == altar_ids[i]
 				players[u.getOwner().getId()].altars.add(u)
 				print("added altar")
+				break
+		for i = 0 to ancient_count
+			if tpid == ancient_ids[i]
+				extraPeonSupply++
 				return
 				
 	function onConstructStart(unit u)
 		let tpid = u.getTypeId()
 		for i = 0 to ancient_count
 			if tpid == ancient_ids[i]
-				peonSupply--
+				extraPeonSupply--
+				return
+				
+	function onConstructCancel(unit u)
+		let tpid = u.getTypeId()
+		for i = 0 to ancient_count
+			if tpid == ancient_ids[i]
+				extraPeonSupply++
 				return
 					
 	function onUpgrade(unit u)
@@ -424,6 +435,11 @@ public class FSpecPlayer
 		if fp != null
 			fp.onConstructStart(GetConstructingStructure())
 			
+	static function onConstructCancelEvent()
+		let fp = players[GetCancelledStructure().getOwner().getId()]
+		if fp != null
+			fp.onConstructCancel(GetCancelledStructure())
+			
 	static function onReviveEvent()
 		let fp = players[GetRevivingUnit().getOwner().getId()]
 		if fp != null
@@ -500,6 +516,7 @@ public function init_FSpecPlayer()
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_TRAIN_CANCEL)..addAction(function FSpecPlayer.onTrainEventCancel)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_CONSTRUCT_FINISH)..addAction(function FSpecPlayer.onConstructEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_CONSTRUCT_START)..addAction(function FSpecPlayer.onConstructStartEvent)
+	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL)..addAction(function FSpecPlayer.onConstructCancelEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_UPGRADE_FINISH)..addAction(function FSpecPlayer.onUpgradeEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_HERO_REVIVE_FINISH)..addAction(function FSpecPlayer.onReviveEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_HERO_REVIVE_START)..addAction(function FSpecPlayer.onReviveStartEvent)
