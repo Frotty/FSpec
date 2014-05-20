@@ -211,18 +211,18 @@ public class FSpecPlayer
 		if u == hero1
 			lvl = GetHeroLevel(hero1)
 			heroRev1 = (55 * lvl * 0.65).toInt()
-			if heroRev1 > 55 * 4.0
-				heroRev1 = (55 * 4.0).toInt()
+			if heroRev1 > 110
+				heroRev1 = 110
 		else if u == hero2
 			lvl = GetHeroLevel(hero2)
 			heroRev2 = (55 * lvl * 0.65).toInt()
-			if heroRev2 > 55 * 4.0
-				heroRev2 = (55 * 4.0).toInt()
+			if heroRev2 > 110
+				heroRev2 = 110
 		else if u == hero3
 			lvl = GetHeroLevel(hero3)
 			heroRev3 = (55 * lvl * 0.65).toInt()
-			if heroRev3 > 55 * 4.0
-				heroRev3 = (55 * 4.0).toInt()
+			if heroRev3 > 110
+				heroRev3 = 110
 			
 			
 	function onReviveCancel(unit u)
