@@ -46,7 +46,7 @@ function checkPlayers()
 	
 	GetExpiredTimer().start(5,() -> begin 
 		for s in spectators
-			printTimedToPlayer("|cff9484D6This game is brought to you by w3arena.net|r", 10, s)
+			printTimedToPlayer("|cff9484D6This game is brought to you by w3arena.net|r", 20, s)
 	end)
 	
 			
