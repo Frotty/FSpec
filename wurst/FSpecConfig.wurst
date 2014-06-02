@@ -29,7 +29,7 @@ public int 	array altar_ids
 
 public int array exp_levels
 public int array ancient_ids
-public int ancient_count = 4
+public int ancient_count = 5
 
 
 
@@ -39,6 +39,7 @@ init
 	ancient_ids[2] = 'eaom'
 	ancient_ids[3] = 'eaow'
 	ancient_ids[4] = 'eden'
+	ancient_ids[5] = 'etol'
 
 	race_icons[Race.HUMAN castTo int] = "ReplaceableTextures\\CommandButtons\\BTNRifleman.blp"
 	race_icons[Race.NIGHTELF castTo int] = "ReplaceableTextures\\CommandButtons\\BTNHuntress.blp"
