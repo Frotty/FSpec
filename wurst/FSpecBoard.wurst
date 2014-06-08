@@ -1,5 +1,5 @@
 package FSpecBoard
-import initlater FSpecConfig
+import FSpecConfig
 import FSpecPlayer
 import LinkedList
 import Damager

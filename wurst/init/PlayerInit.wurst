@@ -3,21 +3,36 @@ import FSpecPlayer
 import FSpecConfig
 import FSpecBoard
 import LinkedList
-import SoundHelper
 FSpecBoard board
+
+
+boolean isInGame = true
+
+//-> IsInGame created by PandaMine with help from Captain Griffen
+//This function is what makes it possible for the system not to break replays,
+//simply put if your actually playing the game, this function will return false.
+//It will return true if the game is being viewed in a replay
+
+
 
 LinkedList<player> spectators = new LinkedList<player>()
 function checkPlayers()
 	init_FSpecPlayer()
 	LinkedList<player> players = new LinkedList<player>()
+	LinkedList<player> humanplayers = new LinkedList<player>()
 	
 	for i = 0 to bj_MAX_PLAYERS-1
 		var p = Player(i)
 		if p.getSlotState() == PLAYER_SLOT_STATE_PLAYING 
 			players.add(p)
-		
 		else if p.getState(PLAYER_STATE_OBSERVER) > 0
 			spectators.add(p)
+		if p.getController() == MAP_CONTROL_USER and p.getSlotState() == PLAYER_SLOT_STATE_PLAYING
+			humanplayers.add(p)
+		
+		
+			
+	
 			
 			
 	// TODO more than 1vs1 and 2vs2
@@ -39,10 +54,16 @@ function checkPlayers()
 		board = new FSpecBoard(2, 1)
 		board.addPlayer(new FSpecPlayer(players.get(0), getEnum(GetPlayerRace(players.get(0)))))
 		board.addPlayer(new FSpecPlayer(players.get(1), getEnum(GetPlayerRace(players.get(1)))))
-		
-	for o in spectators
-		board.mb.display(o, true)
-			
+	print("humans : " + humanplayers.getSize().toString())
+	if humanplayers.getSize() <= 1 
+		print("only 1 human")
+		for p in humanplayers
+			print("display")
+			board.mb.display(p, true)
+	else
+		for o in spectators
+			board.mb.display(o, true)
+
 	
 	GetExpiredTimer().start(5,() -> begin 
 		for s in spectators
