@@ -3,6 +3,7 @@ import FSpecPlayer
 import FSpecConfig
 import FSpecBoard
 import LinkedList
+
 FSpecBoard board
 
 
@@ -16,10 +17,12 @@ boolean isInGame = true
 
 
 LinkedList<player> spectators = new LinkedList<player>()
+LinkedList<player> humanplayers 
+LinkedList<player> players 
 function checkPlayers()
 	init_FSpecPlayer()
-	LinkedList<player> players = new LinkedList<player>()
-	LinkedList<player> humanplayers = new LinkedList<player>()
+	players = new LinkedList<player>()
+	humanplayers = new LinkedList<player>()
 	
 	for i = 0 to bj_MAX_PLAYERS-1
 		var p = Player(i)
@@ -54,22 +57,23 @@ function checkPlayers()
 		board = new FSpecBoard(2, 1)
 		board.addPlayer(new FSpecPlayer(players.get(0), getEnum(GetPlayerRace(players.get(0)))))
 		board.addPlayer(new FSpecPlayer(players.get(1), getEnum(GetPlayerRace(players.get(1)))))
-	print("humans : " + humanplayers.getSize().toString())
-	if humanplayers.getSize() <= 1 
-		print("only 1 human")
-		for p in humanplayers
-			print("display")
-			board.mb.display(p, true)
-	else
+		
+
+	OnGameStatusFound(() -> begin
 		for o in spectators
 			board.mb.display(o, true)
+		switch GetGameStatus()
+			case GAME_STATUS_REPLAY
+				board.mb.display(players.get(0), true)
+			default
+				skip				
+	end)
 
-	
 	GetExpiredTimer().start(5,() -> begin 
 		for s in spectators
 			printTimedToPlayer("|cff9484D6This game is brought to you by w3arena.net|r", 20, s)
 	end)
-	
+
 			
 function getEnum(race r) returns Race
 	if r == RACE_HUMAN

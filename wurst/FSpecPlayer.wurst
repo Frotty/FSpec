@@ -5,7 +5,8 @@ import MapBounds
 import initlater FSpecBoard
 import LinkedList
 import HashMap
-
+import ObjectIds
+import ClosureTimers
 FSpecPlayer array players
 
 int typId = 0
@@ -181,6 +182,14 @@ public class FSpecPlayer
 			soldierSupply = 0
 		board.mb.getItem(startRow+4, startCol).setValue(peonSupply.toString())
 		board.mb.getItem(startRow+4, startCol+1).setValue(soldierSupply.toString())
+	
+	boolean capped = false
+		
+	function checkSupply()
+		if p.getState(PLAYER_STATE_RESOURCE_FOOD_USED) >= p.getState(PLAYER_STATE_RESOURCE_FOOD_CAP)
+			capped = true
+		else
+			capped = false
 		
 		
 	function onDeath(unit u)
@@ -368,16 +377,23 @@ public class FSpecPlayer
 		
 	function onTrainCancel(int uid)
 		let u = GetTriggerUnit()
-		trainCountMap.put(u, trainCountMap.get(u) - 1)
-		if trainCountMap.get(u) > 0
-			testCancel = true
-			creator = u
-			fused = GetFoodUsed(uid)
-			tim = getTimer()
-			tim..start(0.001, function endTest)..setData(this castTo int)
-		else
-			inTrainSupply -= GetFoodUsed(uid)
-			trainIdMap.put(u, 0)
+		let foodBefore = p.getState(PLAYER_STATE_RESOURCE_FOOD_USED)
+		doAfter(0.01, () -> begin
+			let foodAfter = p.getState(PLAYER_STATE_RESOURCE_FOOD_USED)
+			
+			trainCountMap.put(u, trainCountMap.get(u) - 1)
+			if trainCountMap.get(u) > 0
+				testCancel = true
+				creator = u
+				fused = GetFoodUsed(uid)
+				tim = getTimer()
+				tim..start(0.001, function endTest)..setData(this castTo int)
+			else
+				if foodBefore != foodAfter
+					inTrainSupply -= GetFoodUsed(uid)
+				trainIdMap.put(u, 0)
+					
+		end)
 			
 
 		
@@ -505,4 +521,5 @@ public function init_FSpecPlayer()
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER)..addAction(function FSpecPlayer.onTargetOrderEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER)..addAction(function FSpecPlayer.onPointOrderEvent)
 	CreateTrigger()..registerAnyUnitEvent(EVENT_PLAYER_UNIT_ISSUED_ORDER)..addAction(function FSpecPlayer.onOrderEvent)
+	
 	
