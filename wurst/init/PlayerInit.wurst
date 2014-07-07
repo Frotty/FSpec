@@ -59,19 +59,21 @@ function checkPlayers()
 		board.addPlayer(new FSpecPlayer(players.get(1), getEnum(GetPlayerRace(players.get(1)))))
 		
 
-	OnGameStatusFound(() -> begin
-		for o in spectators
+//	OnGameStatusFound(() -> begin
+//		for o in spectators
+//			board.mb.display(o, true)
+//		switch GetGameStatus()
+//			case GAME_STATUS_REPLAY
+//				board.mb.display(players.get(0), true)
+//			default
+//				skip				
+//	end)
+	for o in spectators
 			board.mb.display(o, true)
-		switch GetGameStatus()
-			case GAME_STATUS_REPLAY
-				board.mb.display(players.get(0), true)
-			default
-				skip				
-	end)
-
 	GetExpiredTimer().start(5,() -> begin 
 		for s in spectators
 			printTimedToPlayer("|cff9484D6This game is brought to you by w3arena.net|r", 20, s)
+			
 	end)
 
 			
