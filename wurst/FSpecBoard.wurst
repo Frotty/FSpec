@@ -95,7 +95,7 @@ public class FSpecBoard
 		for p in plist
 			p.update()
 			
-		
+		MultiBoardIs
 		
 
 

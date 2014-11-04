@@ -3,7 +3,7 @@ import FSpecPlayer
 import FSpecConfig
 import FSpecBoard
 import LinkedList
-
+import MapBounds
 FSpecBoard board
 
 
@@ -89,3 +89,4 @@ function getEnum(race r) returns Race
 
 init
 	CreateTimer().start(0.01, function checkPlayers)
+	
